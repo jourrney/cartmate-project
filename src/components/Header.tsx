@@ -11,7 +11,7 @@ import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import logo from "../assets/shopping-store.png";
 import { Flex, Input } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -61,17 +61,25 @@ const items: MenuItem[] = [
   },
   {
     label: "장바구니",
-    key: "mail",
+    key: "cart",
     icon: <ShoppingCartOutlined />,
   },
 ];
 
 const CustomHeader = () => {
   const [current, setCurrent] = useState("mail");
+  const navigate = useNavigate();
 
-  const onClick: MenuProps["onClick"] = (e) => {
-    console.log("click ", e);
+  // const onClick: MenuProps["onClick"] = (e) => {
+  //   console.log("click ", e);
+  //   setCurrent(e.key);
+  // };
+  const cartOnClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
+
+    if (e.key === "cart") {
+      navigate("/cart"); // 장바구니 페이지로만 이동
+    }
   };
 
   return (
@@ -87,26 +95,26 @@ const CustomHeader = () => {
       }}
     >
       {/* 왼쪽: 로고 + 페이지명 */}
-      <Link to="/">
+      <Link to="/" style={{ textDecoration: "none", color: "navy" }}>
         <div
-          style={{ display: "flex", alignItems: "center", marginLeft: "80px" }}
+          style={{ display: "flex", alignItems: "center", marginLeft: "-10px" }}
         >
           <img
-            src={logo} // public 폴더의 기본 리액트 로고 예시
+            src={logo}
             alt="logo"
-            style={{ width: "32px", marginRight: "12px" }}
+            style={{ width: "32px", marginRight: "10px" }}
           />
           <h2 style={{ margin: 0 }}>CartMate</h2>
         </div>
       </Link>
 
-      <Flex style={{ marginRight: "350px", width: "500px" }}>
-        <Input.Search placeholder="Filled" variant="filled" />
+      <Flex style={{ marginRight: "380px", width: "800px" }}>
+        <Input.Search placeholder="상품명 혹은 브랜드 입력" variant="filled" />
       </Flex>
 
       {/* 오른쪽: 메뉴 */}
       <Menu
-        onClick={onClick}
+        onClick={cartOnClick}
         selectedKeys={[current]}
         mode="horizontal"
         items={items}
